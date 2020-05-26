@@ -1,0 +1,21 @@
+FROM ubuntu:20.04
+# locale
+ENV LANG=ja_JP.UTF-8   \
+    LANGUAGE=ja_JP:ja  \
+    LC_ALL=ja_JP.UTF-8 \
+    TZ=Asia/Tokyo
+
+## rootパスワードを設定
+RUN echo 'root:password' | chpasswd
+
+# 環境構築
+RUN apt update -y && \
+    apt install -y tree vim wget openssl openssh-server iproute2 sudo
+
+## ssh接続設定
+RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+
+EXPOSE 50022
+CMD /sbin/init
+
+# https://qiita.com/kuboshu83/items/f827ad7068550cded72d

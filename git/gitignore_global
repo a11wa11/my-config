@@ -1,0 +1,10 @@
+# 共通
+~
+.DS_Store
+__pycache__/
+.dockerignore
+.vscode
+mysql.env
+python.code-workspace
+venv/
+log/

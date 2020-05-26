@@ -1,0 +1,16 @@
+brave-browser 81.1.7.98,107.98
+cheatsheet 1.6
+chromedriver 90.0.4430.24
+dbeaver-community 21.0.4
+discord 0.0.259
+docker 2.4.0.0,48506
+firefox 88.0.1
+google-japanese-ime latest
+hyperswitch 0.2.589-dev
+iterm2 3.3.7
+itsycal 0.11.17
+mi 3.5.2,1000
+mysqlworkbench 8.0.16
+pycharm-ce 2019.3,193.5233.109
+visual-studio-code 1.39.2
+zoom 5.6.4.765

@@ -1,0 +1,91 @@
+version: '3.3'
+services:  
+  CentOS7:
+    build:
+      context: .
+      dockerfile: "Dockerfile_centos7"
+    image: my_centos7
+    container_name: my_centos7
+    hostname: CentOS7
+    ports:
+      - "50121:22"
+    tty: true
+    privileged: true
+    command: /sbin/init
+
+  CentOS8:
+    build:
+      context: .
+      dockerfile: "Dockerfile_centos8"
+    image: my_centos8
+    container_name: my_centos8
+    hostname: CentOS8
+    ports:
+      - "50122:22"
+    tty: true
+    privileged: true
+    command: /sbin/init
+
+  ubuntu1804:
+    build:
+      context: .
+      dockerfile: "Dockerfile_ubuntu1804"
+    image: my_ubuntu1804
+    container_name: my_ubuntu1804
+    hostname: ubuntu1804
+    ports:
+      - "50023:22"
+    tty: true
+    privileged: true
+    command: /sbin/init
+
+  ubuntu2004:
+    build:
+      context: .
+      dockerfile: "Dockerfile_ubuntu2004"
+    image: my_ubuntu2004
+    container_name: my_ubuntu2004
+    hostname: ubuntu2004
+    ports:
+      - "50022:22"
+    tty: true
+    privileged: true
+    command: /sbin/init
+
+
+
+    # volumes:
+    #   - "vol_mysql:/var/lib/mysql"
+    #   - "./config_db/my.cnf:/etc/mysql/conf.d/my.cnf:ro"
+      # ↓ /docker-entrypoint-initdb.dにある拡張子.sh、.sql、.sql.gzのファイルを実行する
+    #   - "./config_db/start.sql:/docker-entrypoint-initdb.d/start.sql"
+    # networks:
+    #   - my-network
+
+#   app:
+#     build: ./config_python
+#     image: im_python
+#     container_name: con_py
+#     env_file: ./config_db/mysql.env
+#     tty: true
+#     expose: 
+#       - "80"
+#       - "443"
+#     ports:
+#       - 8080:80
+#       - 8081:443
+#     volumes:
+#       - "vol_python:/root/log"
+#       - ".:/root/dirc"
+#     depends_on:
+#       - db 
+#     networks:
+#       - my-network
+
+# volumes:
+#   vol_mysql:
+#   vol_python:
+    
+# networks:
+#   my-network:
+#     external: true

@@ -1,0 +1,15 @@
+anyenv 1.1.2
+awscli 2.2.3
+gdbm 1.19
+geckodriver 0.29.1
+jq 1.6
+mpdecimal 2.5.1
+mysql@5.7 5.7.34
+oniguruma 6.9.7.1
+openssl@1.1 1.1.1k
+python@3.9 3.9.5
+readline 8.1
+sqlite 3.35.5
+tcl-tk 8.6.11_1
+tree 1.8.0
+xz 5.2.5

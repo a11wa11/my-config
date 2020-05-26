@@ -1,0 +1,25 @@
+[user]
+    name = XXX
+    email = xxxxxx@xxxx.com
+[alias]
+    co = checkout
+    st = status
+    br = branch
+    ft = fetch
+    cm = commit
+    log1 = log --oneline
+    dt = difftool
+[diff]
+    tool = vimdiff
+[difftool]
+    prompt = false
+[core]
+    excludesfile = ~/.gitignore_global
+
+# git config --global user.name "First-name Family-name"
+# git config --global user.email "username@example.com"
+# git config --global color.diff auto
+# git config --global color.status auto
+# git config --global color.branch auto
+# git config --global tool vimdiff
+# git config --global prompt false

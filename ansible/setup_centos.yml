@@ -1,0 +1,54 @@
+- hosts: centos
+  become: yes
+  gather_facts: false
+  vars:
+    python_url: https://www.python.org/ftp/python/3.5.9/Python-3.5.9.tar.xz
+    dest_dir: /home/ec2-user/tmp/
+  tasks:
+    - name: 1. yumのアップデート
+      yum:
+        name: "*"
+        state: latest
+      register: result_update
+    - debug: msg={{result_update.stdout_lines}}
+
+    - name: 2. epel,xrdp,tigervncのインストール
+      yum:
+        name:
+          # - epel-release
+          - xrdp
+          # - tigervnc-server
+        state: present
+      register: result
+    - debug: msg={{result.stdout_lines}}
+      when:
+         ansible_distribution == "CentOS"
+
+    - name: 3. 開発ツールのインストール
+      yum:
+        name:
+          - tree
+          # - vim
+          # - wget
+          # - httpd
+          # - openssl-devel
+          # - mysql
+        state: present
+    #   register: result
+    # - debug: msg={{result.stdout_lines}}
+
+    - name: installing python
+      get_url:
+        url={{python_url}}
+        dest={{dest_dir}}
+      register: result
+    - name: extracting python_file
+      unarchive: 
+        src="{{dest_dir}}Python-3.5.9.tar.xz"
+        dest={{dest_dir}}
+      register: result
+    - name: shellの実行
+      shell: ./configure --prefix=/usr/local/python
+      args:
+        chdir: ~/tmp/Python-3.5.9        
+    - debug: msg={{result}}

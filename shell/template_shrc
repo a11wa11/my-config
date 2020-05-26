@@ -1,0 +1,44 @@
+# User specific aliases
+alias cp='cp -i'
+alias mv='mv -i'
+alias rm='rm -i'
+alias grep='grep --color=auto'
+alias egrep='egrep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias ll='\ls -lh'
+alias less='less -iN'
+
+[ `uname` = 'Darwin' ] && alias updatedb='sudo /usr/libexec/locate.updatedb'
+
+HISTTIMEFORMAT='%m-%d %H:%M '
+HISTSIZE=99999
+HISTIGNORE=pwd:cd:history:ls:ll:which
+HISTCONTROL=ignoreboth
+LANG="ja_JP.UTF-8"
+
+# " 'docker-tags centos' でタグ一覧を取得. jq & curl　が必要"
+if [ -e /usr/local/bin/docker ]; then
+        function docker-tags {
+                curl -s https://registry.hub.docker.com/v1/repositories/$1/tags | jq -r '.[].name'
+        }
+fi
+
+# User specific functions
+if [ `uname` = 'Darwin' ]; then
+     [ $SHELL = '/bin/bash' ] &&  source /Library/Developer/CommandLineTools/usr/share/git-core/git-prompt.sh
+     [ $SHELL = '/bin/bash' ] &&  source /Library/Developer/CommandLineTools/usr/share/git-core/git-completion.bash
+elif [ `uname` = 'Linux' ]; then
+     [ -e /usr/share/git-core/contrib/completion/git-prompt.sh ] && source /usr/share/git-core/contrib/completion/git-prompt.sh
+     [ -e /usr/lib/git-core/git-sh-prompt ] && source /usr/lib/git-core/git-sh-prompt
+     # source /usr/share/git-core/contrib/completion/git-completion.tcsh
+fi
+[ $SHELL = '/bin/bash' ] && PS1="\[\e[33m\]   ________ \D{%H:%M}  \[\e[35m\]\w \[\e[33m\] ________$(__git_ps1) \n\$ \[\e[0m\]"
+[ $SHELL = '/bin/bash' ] && GIT_PS1_SHOWDIRTYSTATE=true
+[ $SHELL = '/bin/zsh' ] && PROMPT='[%F{yellow}%U%n%u@%m%f]
+$ '
+[ $SHELL = '/bin/zsh' ] && RPROMPT='[%F{green}%d : %D %*%f]'
+[ `uname -m` = 'arm64' ] && export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+#########################
+echo "**shrc loaded!  \nSHELL=$SHELL" 
+#########################
+export PATH="/opt/homebrew/opt/ansible@2.9/bin:$PATH"

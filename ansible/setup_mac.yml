@@ -1,0 +1,39 @@
+- hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: 1. homebrewでパッケージのインストール
+      homebrew: 
+        name: 
+          - jq
+          - tree
+          - anyenv
+        path: /opt/homebrew/bin
+        state: present
+#      register: result
+#    - debug: msg={{result.stdout_lines}}
+
+    - name: 2. chromeのインストール
+      community.general.homebrew_cask: 
+        name: 
+          - google-chrome
+          - firefox
+          - microsoft-edge
+          - brave-browser
+          - iterm2
+          - docker
+          - cheatsheet
+#          - visual-studio-code
+          - pycharm-ce
+#          - mi
+#          - zoom
+          - discode
+#          - itsyscal
+#          - hyperswitch
+#          - google-japanse-ime
+#          - mysqlworkbench
+#          - dbeaver-community
+        path: /opt/homebrew/bin
+        state: present
+#      register: result
+#    - debug: msg={{result.stdout_lines}}
+
