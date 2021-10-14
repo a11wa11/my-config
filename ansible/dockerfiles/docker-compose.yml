@@ -1,5 +1,10 @@
-version: '3.3'
+version: '3.5' #3.4以上でなければnetworksでnameを指定不可
 services:  
+  web:
+    image: httpd:alpine
+    ports:
+      - "8080:80"
+
   CentOS7:
     build:
       context: .
@@ -7,11 +12,14 @@ services:
     image: my_centos7
     container_name: my_centos7
     hostname: CentOS7
-    ports:
-      - "50121:22"
+    command: /sbin/init
     tty: true
     privileged: true
-    command: /sbin/init
+    ports:
+      - "50121:22"
+    networks:
+      client_network:
+        ipv4_address: 11.11.11.2
 
   CentOS8:
     build:
@@ -52,7 +60,14 @@ services:
     privileged: true
     command: /sbin/init
 
-
+# ネットワークのサブネット値を指定する
+networks:
+  client_network:
+    name: client_network
+    ipam:
+      config:
+        - subnet: 11.11.11.0/24
+        # docker network create --subnet=11.11.11.0/24 client_network
 
     # volumes:
     #   - "vol_mysql:/var/lib/mysql"

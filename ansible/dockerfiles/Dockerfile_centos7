@@ -18,3 +18,4 @@ RUN yum update -y && \
 
 EXPOSE 50121
 CMD /sbin/init
+WORKDIR /root/
