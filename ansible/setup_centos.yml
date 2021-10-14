@@ -1,4 +1,4 @@
-- hosts: centos7
+- hosts: centos
   become: yes
   gather_facts: false
   vars:
@@ -39,7 +39,7 @@
       register: result
     - debug: msg={{result}}
 
-    - name: 5. installing python
+    - name: 5. downloading python
       get_url:
         url={{python_url}}
         dest={{dest_dir}}
@@ -53,7 +53,7 @@
         remote_src=yes
       register: result
     
-    - name: shellの実行
+    - name: 7. installing python
       shell: ./configure --prefix=/usr/local/python
       args:
         chdir: "{{dest_dir}}Python-3.5.9"

@@ -10,6 +10,14 @@ ansibleの練習用のディレクトリ
 1. host_key_checking: ansibleはsshで遠隔操作するため、都度ssh接続時の鍵認証問い合わせを省略する
 1. log_path: ansible実行時のログを記録するパス
 
+## ansible実行前の準備
+
+* 対象のサーバにsshできるように以下を実行
+
+```sh
+ssh-copy-id root@localhost -p ポート番号
+```
+
 ## ansible実行コマンド
 
 ```sh
