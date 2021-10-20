@@ -22,4 +22,14 @@ ssh-copy-id root@localhost -p ポート番号
 
 ```sh
 ansible-playbook -i hosts setup_centos.yml
+
+# インベントリファイルを指定せず、直接ホストを指定する場合はカンマをつける
+ansible-playbook -i cent7, setup_centos.yml
+```
+
+## 確認コマンド
+
+```sh
+# インベントリの構成確認
+ansible-inventory -i hosts --list --yaml
 ```

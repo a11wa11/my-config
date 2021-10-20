@@ -1,3 +1,7 @@
+[centos:children]
+centos7
+centos8
+
 [centos7]
 localhost
 
@@ -7,16 +11,24 @@ ansible_ssh_user=root
 ansible_ssh_private_key_file=~/.ssh/id_rsa
 
 [centos8]
-localhost
+127.0.0.1
 
 [centos8:vars]
 ansible_port=50122
 ansible_ssh_user=root
 ansible_ssh_private_key_file=~/.ssh/id_rsa
 
-[centos:children]
-centos7
-centos8
+[ubuntu:children]
+ubuntu1804
+ubuntu2004
+
+[ubuntu2004]
+127.0.0.1
+ansible_port=50022 
+
+[ubuntu1804]
+localhost
+ansible_port=50023
 
 # 別の書き方
 # [centos7]

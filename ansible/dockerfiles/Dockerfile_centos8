@@ -19,3 +19,5 @@ RUN dnf install -y python3 && \
 
 EXPOSE 50122
 CMD /sbin/init
+WORKDIR /root/
+
