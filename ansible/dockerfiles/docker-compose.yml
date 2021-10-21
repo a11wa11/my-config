@@ -9,8 +9,8 @@ services:
     build:
       context: .
       dockerfile: "Dockerfile_centos7"
-    image: my_centos7
-    container_name: my_centos7
+    image: centos7_i
+    container_name: centos7_i
     hostname: CentOS7
     command: /sbin/init
     tty: true
@@ -25,40 +25,46 @@ services:
     build:
       context: .
       dockerfile: "Dockerfile_centos8"
-    image: my_centos8
-    container_name: my_centos8
+    image: centos8_i
+    container_name: centos8_i
     hostname: CentOS8
     ports:
       - "50122:22"
     tty: true
-    privileged: true
+    privileged: yes
     command: /sbin/init
+    networks:
+      client_network:
 
   ubuntu1804:
     build:
       context: .
       dockerfile: "Dockerfile_ubuntu1804"
-    image: my_ubuntu1804
-    container_name: my_ubuntu1804
+    image: ubuntu1804_i
+    container_name: ubuntu1804_i
     hostname: ubuntu1804
     ports:
       - "50023:22"
     tty: true
     privileged: true
     command: /sbin/init
+    networks:
+      client_network:
 
   ubuntu2004:
     build:
       context: .
       dockerfile: "Dockerfile_ubuntu2004"
-    image: my_ubuntu2004
-    container_name: my_ubuntu2004
+    image: ubuntu2004_i
+    container_name: ubuntu2004_i
     hostname: ubuntu2004
     ports:
       - "50022:22"
     tty: true
     privileged: true
     command: /sbin/init
+    networks:
+      client_network:
 
 # ネットワークのサブネット値を指定する
 networks:
