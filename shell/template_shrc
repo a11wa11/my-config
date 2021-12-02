@@ -37,6 +37,11 @@ fi
 [ $SHELL = '/bin/zsh' ] && PROMPT='[%F{yellow}%U%n%u@%m%f]
 $ '
 [ $SHELL = '/bin/zsh' ] && RPROMPT='[%F{green}%d : %D %*%f]'
+[ $SHELL = '/bin/zsh' ] && autoload -U compinit && compinit  # コマンド保管を有効にする
+[ $SHELL = '/bin/zsh' ] && setopt hist_ignore_dups           # 直近の重複履歴を残さない
+[ $SHELL = '/bin/zsh' ] && setopt extended_history           # historyの履歴に時刻を残す
+[ $SHELL = '/bin/zsh' ] && alias history='history -100'      # historyコマンドで100件表示する
+
 [ `uname -m` = 'arm64' ] && export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
 #########################
 echo "**shrc loaded!  \nSHELL=$SHELL" 
