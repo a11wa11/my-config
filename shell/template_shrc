@@ -1,11 +1,12 @@
 # User specific aliases
+alias ls='ls --color'
 alias cp='cp -i'
 alias mv='mv -i'
 alias rm='rm -i'
 alias grep='grep --color=auto'
 alias egrep='egrep --color=auto'
 alias fgrep='fgrep --color=auto'
-alias ll='\ls -lh'
+alias ll='\ls -lh --color'
 alias less='less -iN'
 
 [ `uname` = 'Darwin' ] && alias updatedb='sudo /usr/libexec/locate.updatedb'
@@ -47,3 +48,4 @@ $ '
 echo "**shrc loaded!  \nSHELL=$SHELL" 
 #########################
 export PATH="/opt/homebrew/opt/ansible@2.9/bin:$PATH"
+eval "$(nodenv init -)" # eval "$(nodenv init -)"
