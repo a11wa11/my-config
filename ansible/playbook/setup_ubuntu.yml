@@ -1,0 +1,355 @@
+
+# https://qiita.com/atomyah/items/887a5185ec9a8206c7c4
+# https://sandas.hatenablog.com/entry/2021/04/10/024745
+# https://www.atmarkit.co.jp/ait/articles/1806/28/news043.html
+# https://goodbyegangster.hatenablog.com/entry/2019/05/02/053303
+# https://qiita.com/moiwa/items/c320c7073a7ef086c5c9 -7
+# https://docs.docker.com/engine/install/ubuntu/ 
+# https://www.karelie.net/how-to-install-google-chrome-on-ubuntu 
+# https://tech.unifa-e.com/entry/2018/05/18/112810
+# https://github.com/rbenv/ruby-build/wiki
+# https://tekunabe.hatenablog.jp/entry/2019/08/29/ansible_counter_enabled
+# https://zaki-hmkc.hatenablog.com/entry/2020/12/12/124353
+
+- hosts: ubuntu
+  become: yes
+  gather_facts: false
+  tasks:
+      - name: 1-1. インストール済のパッケージを新しいバージョンにアップグレード (apt upgrad)
+        apt: upgrade=full
+        register: result
+      - debug: msg={{result.stdout_lines}}
+
+      - name: 1-2. 必須のパッケージをインストール
+        package:
+          name: 
+            - tree
+            - git
+            - net-tools
+          state: present
+
+      # - name: 2-0 sudoコマンド実行時にパスワードを求められないようにする
+      #   block:
+      #     - name: 2-1. ユーザー名を取得
+      #       become: no
+      #       command: whoami
+      #       register: user_result
+      #       check_mode: no
+      #       changed_when: false
+          
+      #     - name: 2-2. sudoersファイルにユーザー名を登録
+      #       lineinfile:
+      #         path: /etc/sudoers
+      #         backup: yes
+      #         insertafter: EOF
+      #         line: "{{user_result.stdout}} ALL=(ALL) NOPASSWD: ALL"
+
+      - name: 3-1. CUIを日本語化。日本語言語パックのインストール
+        apt:
+          name: language-pack-ja
+          state: present
+
+      - name: 3-2. 現在のシステムロケール情報を取得
+        command: locale
+        register: locale_result
+        check_mode: no
+        changed_when: false
+
+      - name: 3-3. システムロケールの日本語化実行
+        command: update-locale LANG=ja_JP.UTF-8
+        when: "'LANG=ja_JP.UTF-8' not in locale_result.stdout"
+
+      - name: 3-4. 日本語化マニュアルのインストール
+        apt:
+          name:
+            - manpages-ja
+            - manpages-ja-dev
+          state: present
+
+      - name: 4. ローカルからssh可能にする
+        lineinfile:
+          path: /etc/ssh/sshd_config
+          backrefs: yes
+          regexp: '^PasswordAuthentication no'
+          line: PasswordAuthentication yes
+
+      - name: 5. 起動時にIPアドレスを標準出力するようにする
+        become: no
+        lineinfile:
+          path: ~/.profile
+          backup: yes
+          insertafter: EOF
+          line: echo -e "\n\nIP = "`ip a show eth0 | grep 'inet ' | awk '{ print $2 }' | sed -E 's/\/[0-9]*//g'` "\n\n"
+
+      # - name: 6-0 dockerのインストール
+      #   block:
+      #     - name: 6-1. Dockerのインストール準備
+      #       apt:
+      #         name:
+      #           - apt-transport-https
+      #           - ca-certificates
+      #           - curl
+      #           - gnupg
+      #           - lsb-release
+      #         state: present
+
+      #     - name: 6-2. Dockerの公式GPG鍵を追加
+      #       shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+      #       args:
+      #         creates: /usr/share/keyrings/docker-archive-keyring.gpg
+
+      #     - name: 6-3. ubuntuに安定版dockerリポジトリを追加
+      #       shell: echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu/gpg $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+      #       args:
+      #         creates: /etc/apt/sources.list.d/docker.list
+
+      #     - name: 6-4. Dockerのインストール
+      #       apt:
+      #         name:
+      #           - docker-ce
+      #           - docker-ce-cli
+      #           - containerd.io
+      #           - docker-compose
+      #         update_cache: yes
+      #         state: present
+
+      #     - name: 6-5. dockerコマンドをsudoなしで実行できるようにする
+      #       user:
+      #         name: "{{user_result.stdout}}"
+      #         groups: docker
+      #         append: yes
+
+      # - name: 7-0. anyenvのインストール
+      #   become: no
+      #   block:
+
+      - name: 7-1. anyenvのインストール準備
+        git:
+          repo: https://github.com/anyenv/anyenv
+          dest: ~/.anyenv
+        async: 10
+        poll: 0
+        register: result_clone
+
+      - name: 7-2. anyenvのpathの追加
+        lineinfile:
+          path: ~/.profile
+          insertafter: EOF
+          line: export PATH="$HOME/.anyenv/bin:$PATH"
+        async: 10
+        poll: 0
+
+      - name: 7-3. anyenv起動の自動化
+        lineinfile:
+          path: ~/.profile
+          insertafter: EOF
+          line: eval "$(anyenv init -)"
+        async: 10
+        poll: 0
+
+      - name: 7-4. anyenvの起動
+        shell: ". ~/.profile"
+        # until: result_clone.finished
+        delay: 1
+
+      - name: 7-5. anyenvのインストール
+        shell: yes | ~/.anyenv/bin/anyenv install --init
+        args:
+          creates: ~/.config/anyenv/anyenv-install/
+
+      - name: 7-6. anyenvからのrbenvのインストール
+        shell: ~/.anyenv/bin/anyenv install rbenv
+        args:
+          creates: ~/.anyenv/envs/rbenv
+        async: 60
+        poll: 0
+
+      - name: 7-7. anyenvからのpyenvのインストール
+        shell: ~/.anyenv/bin/anyenv install pyenv
+        args:
+          creates: ~/.anyenv/envs/pyenv
+
+      - name: 7-8. anyenvを使用するため、シェルの更新
+        shell: ". ~/.profile"
+
+      - name: 7-9. rbenvに必要なパッケージのインストール
+        become: yes
+        apt:
+          name:
+            - autoconf
+            - bison
+            - build-essential
+            - libssl-dev
+            - libyaml-dev
+            - libreadline6-dev
+            - zlib1g-dev
+            - libncurses5-dev
+            - libffi-dev
+            - libgdbm-dev
+            - libdb-dev
+            - libgdbm6
+          state: present
+        ignore_errors: True
+
+      - name: 7-10. ruby-2.2.2をインストールするためのopensslをダウングレード
+        become: yes
+        lineinfile:
+          path: /etc/apt/sources.list
+          backup: yes
+          insertafter: EOF
+          line: deb http://security.ubuntu.com/ubuntu bionic-security main
+
+      # - name: 7-11. opensslをダウングレードしてインストール
+      #   become: yes
+      #   apt:
+      #     name: libssl1.0-dev
+      #     update_cache: yes
+      #     state: present
+
+      - name: 7-12. rbenv,pyenvを使用するため、.profileを再読込
+        shell: ". ~/.profile"
+
+      - name: 9. デスクトップツールのインストール(apt install xfce4 xrdp)
+        apt:
+          name: 
+            - xfce4
+            - xrdp
+          state: present
+
+      - name: 10.0 xrdp設定ファイルの編集
+        block:
+          - name: 10-1. xrdp設定ファイルの編集 -> ポートを3390に変更(sed -i 's/3389/3390/g' /etc/xrdp/xrdp.ini)
+            replace:
+              path: /etc/xrdp/xrdp.ini 
+              backup: yes
+              regexp: '3389'
+              replace: '3391'
+
+          - name: 10-2. xrdp設定ファイルの編集 -> max_bpp変更1(sed -i 's/max_bpp=32/#max_bpp=32\nmax_bpp=128/g' /etc/xrdp/xrdp.ini)
+            lineinfile:
+              path: /etc/xrdp/xrdp.ini 
+              regexp: 'max_bpp=32'
+              backrefs: yes
+              line: 'max_bpp=128'
+              
+          - name: 10-3. xrdp設定ファイルの編集 -> max_bpp変更2(sed -i 's/xserverbpp=24/#xserverbpp=24\nxserverbpp=128/g' /etc/xrdp/xrdp.ini)
+            lineinfile:
+              path: /etc/xrdp/xrdp.ini 
+              regexp: '^#xserverbpp=24'
+              backrefs: yes
+              line: 'xserverbpp=128'
+
+      - name: 11. xsessionファイルを作成する(echo xfce-session > ~/.xsession)
+        become: no
+        copy:
+          dest: ~/.xsession
+          content: xfce4-session
+
+      - name: 12.0 startwm.shの編集
+        block:
+          - name: 12-1. startwm.shの編集(comment out on /etc/xrdp/startwm.sh)
+            lineinfile:
+              path: /etc/xrdp/startwm.sh
+              backup: yes
+              backrefs: yes
+              regexp: '^test -x /etc/x11/Xsession && exec /etc/X11/Xsession'
+              line: '# コメントアウト # test -x /etc/X11/Xsession && exec /etc/X11/Xsession'
+
+          - name: 12-2. startwm.shの編集(comment out on /etc/xrdp/startwm.sh)
+            lineinfile:
+              path: /etc/xrdp/startwm.sh
+              backup: yes
+              backrefs: yes
+              regexp: '^test -x /etc/x11/Xsession && exec /etc/X11/Xsession'
+              line: '# コメントアウト # test -x /etc/X11/Xsession && exec /etc/X11/Xsession'
+
+          - name: 12-3. startwm.shの追記1(echo '# xfce' >> /etc/xrdp/startwm.sh)
+            lineinfile:
+              path: /etc/xrdp/startwm.sh
+              insertafter: EOF
+              line: '# xfce'
+
+          - name: 12-4. startwm.shの追記2(echo startxfce4 >> /etc/xrdp/startwm.sh)
+            lineinfile:
+              path: /etc/xrdp/startwm.sh
+              insertafter: EOF
+              line: 'startxfce4'
+
+      - name: 13.0 wslデスクトップでの日本語入力設定
+        block:
+          - name: 13-1. wslでwindowsのフォント参照する
+            blockinfile:
+              path: /etc/fonts/local.conf
+              create: yes
+              backup: yes
+              block: |
+                <?xml version="1.0"?>
+                <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+                <fontconfig>
+                  <dir>/mnt/c/Windows/Fonts</dir>
+                </fontconfig>
+
+          - name: 13-2. 日本語の入力設定
+            apt:
+              name: 
+                - fcitx-mozc
+                - dbus-x11
+              state: present
+
+      - name: 14.0 wslデスクトップへブラウザのインストール
+        block:
+          - name: 14-1. ubuntuに安定版Google Chromeリポジトリを追加
+            shell: sh -c 'echo "deb http://dl.google.com/linux/chrome/deb stable main" >> /etc/apt/sources.list.d/google.list'
+            args:
+              creates: /etc/apt/source.list.d/google.list
+
+          - name: 14-2. Googleの署名鍵をダウンロードするか判断
+            command: apt-key list
+            register: key_result
+            check_mode: no
+            changed_when: false
+
+          - name: 14-3. Googleの署名鍵をダウンロード、登録し、パッケージマネージャがGoogle Chromeの完全性を検証できるようにする
+            shell: wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+            when: "'Google Inc' not in key_result.stdout"
+
+          - name: 14-4. ブラウザのインストール
+            apt:
+              name: 
+                - firefox
+                - google-chrome-stable
+              update_cache: yes
+              state: present
+
+      - name: サービスの設定と再起動
+        block:
+          - name: Last. wsl起動時に自動起動させる
+            become: no
+            blockinfile:
+              path: ~/.bashrc
+              backup: yes
+              marker: "# ANSIBLE MANAGED BLOCK <<service>>"
+              block: |
+                sudo service ssh start
+                sudo service xrdp start
+                # sudo service docker start
+                sudo service mysql start
+
+          - name: Last. sshの再起動
+            service:
+              name: ssh
+              state: restarted
+              enabled: yes
+
+          - name: Last. xrdpの再起動
+            service:
+              name: xrdp
+              state: restarted
+              enabled: yes
+            ignore_errors: True
+
+          # - name: Last. dockerの再起動
+          #   service:
+          #     name: docker
+          #     state: restarted
+          #     enabled: yes
