@@ -1,5 +1,5 @@
 
-FROM amazonlinux:2
+FROM amazonlinux:2 as base_ansisble
 
 ENV LANG=en_US.UTF-8
 
@@ -26,6 +26,9 @@ CMD [ "/sbin/init" ]
 USER $USERNAME
 WORKDIR /home/$USERNAME
 
+
+FROM base_ansisble as new_ansisble
+
 RUN $PYTHON_VERSION -m venv virtualenv && \
     source /home/$USERNAME/virtualenv/bin/activate && \
-    pip install ansible==2.13.7
+    pip install ansible-core==2.13.7

@@ -2,6 +2,8 @@
 
 ansibleの練習用のディレクトリ
 
+## ansibleの基本機能や使い方は[こちらを参照](https://a11wa11.github.io/memo/IaC/01_ansible)
+
 ## ansibleの設定ファイル
 
 * ansibleの設定ファイル`(ansible.cfg)`で主に以下の内容を実行時に定義する
