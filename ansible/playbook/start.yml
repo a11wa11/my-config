@@ -1,14 +1,16 @@
 - hosts: localhost
-  become: yes
-  tasks:
-    - name: ログのパスを設定
-      lineinfile: 
-        dest=/etc/ansible/ansible.cfg
-        regexp="^#log_path"
-        line="log_path = /var/log/ansible.log"
-      register: result_log
-    - debug: msg={{result_log}}
-    - name: ログファイルの権限変更
-      file:
-        path: /var/log/ansible.log
-        mode: 0777
+  become: true
+  - name: Set log path
+    ansible.builtin.lineinfile:
+      dest: etc/ansible/ansible.cfg
+      regexp: "^#log_path"
+      line: "log_path = /var/log/ansible.log"
+    register: result_log
+
+  - ansible.builtin.debug:
+      msg: "{{ result_log }}"
+
+  - name: Change permission of log file
+    ansible.builtin.file:
+      path: /var/log/ansible.log
+      mode: 0664
