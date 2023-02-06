@@ -15,7 +15,7 @@
   become: yes
   gather_facts: false
   tasks:
-      - name: 1-1. インストール済のパッケージを新しいバージョンにアップグレード (apt upgrad)
+      - name: 1-1. インストール済のパッケージを新しいバージョンにアップグレード (apt upgrade)
         apt: upgrade=full
         register: result
       - debug: msg={{result.stdout_lines}}

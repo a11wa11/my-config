@@ -31,7 +31,7 @@ services:
     ports:
       - "50122:22"
     tty: true
-    privileged: yes
+    privileged: true
     command: /sbin/init
     networks:
       client_network:
