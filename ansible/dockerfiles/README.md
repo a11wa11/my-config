@@ -5,8 +5,9 @@
 ```sh
 $ pwd
 XXXX/my-config
-$ docker build -t ansible -f Dockerfile_controller . --no-cache
+$ docker build -t ansible -f ansible/dockerfiles/Dockerfile_controller ansible/dockerfiles --no-cache
 
-$ docker run -d --privileged --name al2 -u ec2-user ansible
 $ docker run -d --privileged -u ec2-user --rm --mount type=bind,src=$(pwd)/ansible,dst=/home/ec2-user/workdir --name al2 ansible
+
+$ docker exec -it al2 bash
 ```
