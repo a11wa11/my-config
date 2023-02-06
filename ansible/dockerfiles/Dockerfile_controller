@@ -26,7 +26,6 @@ CMD [ "/sbin/init" ]
 USER $USERNAME
 WORKDIR /home/$USERNAME
 
-
 FROM base_ansisble as new_ansisble
 
 RUN $PYTHON_VERSION -m venv virtualenv && \
