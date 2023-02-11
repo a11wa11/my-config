@@ -25,5 +25,3 @@ case $YN in
         exit 1
         ;;
 esac
-
-

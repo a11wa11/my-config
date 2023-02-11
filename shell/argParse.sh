@@ -14,5 +14,3 @@ do
       ;;
    esac
 done
-
-
