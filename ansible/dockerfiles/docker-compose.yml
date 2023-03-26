@@ -9,62 +9,62 @@ services:
     build:
       context: .
       dockerfile: "Dockerfile_centos7"
-    image: centos7_i
-    container_name: centos7_i
+    image: centos7i
+    container_name: centos7
     hostname: CentOS7
-    command: /sbin/init
     tty: true
     privileged: true
-    ports:
-      - "50121:22"
     networks:
       client_network:
-        ipv4_address: 11.11.11.2
-
-  CentOS8:
-    build:
-      context: .
-      dockerfile: "Dockerfile_centos8"
-    image: centos8_i
-    container_name: centos8_i
-    hostname: CentOS8
-    ports:
-      - "50122:22"
-    tty: true
-    privileged: true
-    command: /sbin/init
-    networks:
-      client_network:
-
-  ubuntu1804:
-    build:
-      context: .
-      dockerfile: "Dockerfile_ubuntu1804"
-    image: ubuntu1804_i
-    container_name: ubuntu1804_i
-    hostname: ubuntu1804
-    ports:
-      - "50023:22"
-    tty: true
-    privileged: true
-    command: /sbin/init
-    networks:
-      client_network:
+        ipv4_address: 11.11.11.11
 
   ubuntu2004:
     build:
       context: .
       dockerfile: "Dockerfile_ubuntu2004"
-    image: ubuntu2004_i
-    container_name: ubuntu2004_i
-    hostname: ubuntu2004
+    image: ubuntu2004i
+    container_name: ubuntu2004
+    hostname: Ubuntu2004
     ports:
-      - "50022:22"
+      - "50500:22"
     tty: true
     privileged: true
     command: /sbin/init
     networks:
       client_network:
+        ipv4_address: 11.11.11.14
+
+  amazonlinux2:
+    build:
+      context: .
+      dockerfile: "Dockerfile_amazonlinux2"
+    image: amazonlinux2i
+    container_name: amazonlinux2
+    hostname: Amazonlinux2
+    ports:
+      - "50600:22"
+    tty: true
+    privileged: true
+    command: /sbin/init
+    networks:
+      client_network:
+        ipv4_address: 11.11.11.15
+
+  amazonlinux2022:
+    build:
+      context: .
+      dockerfile: "Dockerfile_amazonlinux2022"
+    image: amazonlinux2022i
+    container_name: amazonlinux2022
+    hostname: Amazonlinux2022
+    ports:
+      - "50700:22"
+    tty: true
+    privileged: true
+    command: /sbin/init
+    networks:
+      client_network:
+        ipv4_address: 11.11.11.16
 
 # ネットワークのサブネット値を指定する
 networks:
