@@ -1,0 +1,31 @@
+
+FROM amazonlinux:2022 as base_ansisble
+
+ENV LANG=en_US.UTF-8
+
+ARG PYTHON_VERSION=python3.9
+ARG PIP_VERSION=pip3
+ARG ANSIBLE_VERSION=2.9.27
+ARG USERNAME=ec2-user
+RUN echo "alias python=$PYTHON_VERSION" >> /etc/bashrc && \
+    echo "alias pip=$PIP_VERSION" >> /etc/bashrc && \
+    source /etc/bashrc
+
+RUN curl https://bootstrap.pypa.io/get-pip.py | $PYTHON_VERSION && \
+    pip install ansible==$ANSIBLE_VERSION
+
+RUN yum update -y && \
+    yum install -y sudo coreutils openssh-server which tar make file logrotate cronie && \
+    echo '%wheel ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && \    
+    useradd -m -s /bin/bash -G wheel $USERNAME && \
+    touch /var/log/ansible.log && \
+    chown -R $USERNAME:$USERNAME /var/log
+
+USER $USERNAME
+WORKDIR /home/$USERNAME
+
+FROM base_ansisble as new_ansisble
+
+RUN $PYTHON_VERSION -m venv virtualenv && \
+    source /home/$USERNAME/virtualenv/bin/activate && \
+    pip install ansible-core==2.13.7
