@@ -1,4 +1,3 @@
-
 FROM amazonlinux:2 as base_ansisble
 
 ENV LANG=en_US.UTF-8
@@ -21,6 +20,7 @@ RUN yum update -y && \
     useradd -m -s /bin/bash -G wheel $USERNAME && \
     touch /var/log/ansible.log && \
     chown -R $USERNAME:$USERNAME /var/log
+
 RUN echo "NETWORKING=yes" > /etc/sysconfig/network
 CMD [ "/sbin/init" ]
 USER $USERNAME
