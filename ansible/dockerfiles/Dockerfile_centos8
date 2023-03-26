@@ -7,17 +7,17 @@ ENV LANG=ja_JP.UTF-8   \
     LC_ALL=ja_JP.UTF-8 \
     TZ=Asia/Tokyo
 
-## rootパスワードを設定
-RUN echo 'root:password' | chpasswd
-
 # 環境構築
 RUN yum update -y && \
-    yum install -y tree vim wget openssl-devel epel-release openssh-server passwd
+    yum install -y tree vim wget openssl-devel openssh-server epel-release passwd
+
+## rootパスワードを設定
+RUN echo 'root:password' | chpasswd
 
 # ansibleを動かすためにpythonインストール
 RUN dnf install -y python3 && \
     alternatives --set python /usr/bin/python3
 
-EXPOSE 50122
+EXPOSE 50300
 CMD /sbin/init
 WORKDIR /root/

@@ -11,13 +11,13 @@ ENV LANG=ja_JP.UTF-8   \
     LC_ALL=ja_JP.UTF-8 \
     TZ=Asia/Tokyo
 
+# 環境構築
+RUN yum update -y && \
+    yum install -y tree vim wget openssl-devel openssh-server epel-release
+
 ## rootパスワードを設定
 RUN echo "password" | passwd --stdin root
 
-# 環境構築
-RUN yum update -y && \
-    yum install -y tree vim wget openssl-devel epel-release openssh-server
-
-EXPOSE 50121
+EXPOSE 50200
 CMD /sbin/init
 WORKDIR /root/
