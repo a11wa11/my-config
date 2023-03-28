@@ -1,5 +1,4 @@
-
-FROM amazonlinux:2022 as base_ansisble
+FROM amazonlinux:2023.0.20230315.0 as base_ansisble
 
 ENV LANG=en_US.UTF-8
 
@@ -15,13 +14,15 @@ RUN curl https://bootstrap.pypa.io/get-pip.py | $PYTHON_VERSION && \
     pip install ansible==$ANSIBLE_VERSION
 
 RUN yum update -y && \
-    yum install -y sudo coreutils openssh-server which tar make file logrotate cronie && \
+    yum install -y sudo openssh-server which tar make file logrotate cronie passwd && \
     echo '%wheel ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && \    
     useradd -m -s /bin/bash -G wheel $USERNAME && \
+    echo "password" | passwd --stdin $USERNAME && \
     touch /var/log/ansible.log && \
-    chown -R $USERNAME:$USERNAME /var/log
+    chown -R $USERNAME:$USERNAME /var/log && \
+    echo "NETWORKING=yes" > /etc/sysconfig/network
 
-USER $USERNAME
+CMD [ "/sbin/init" ]
 WORKDIR /home/$USERNAME
 
 FROM base_ansisble as new_ansisble
