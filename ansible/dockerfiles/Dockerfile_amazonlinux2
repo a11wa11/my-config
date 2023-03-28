@@ -15,15 +15,15 @@ RUN curl https://bootstrap.pypa.io/get-pip.py | $PYTHON_VERSION && \
     pip install ansible==$ANSIBLE_VERSION
 
 RUN yum update -y && \
-    yum install -y sudo coreutils openssh-server which tar make file logrotate cronie && \
+    yum install -y sudo coreutils openssh-server which tar make file logrotate cronie passwd && \
     echo '%wheel ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && \    
     useradd -m -s /bin/bash -G wheel $USERNAME && \
+    echo "password" | passwd --stdin root && \
     touch /var/log/ansible.log && \
-    chown -R $USERNAME:$USERNAME /var/log
+    chown -R $USERNAME:$USERNAME /var/log && \
+    echo "NETWORKING=yes" > /etc/sysconfig/network
 
-RUN echo "NETWORKING=yes" > /etc/sysconfig/network
 CMD [ "/sbin/init" ]
-USER $USERNAME
 WORKDIR /home/$USERNAME
 
 FROM base_ansisble as new_ansisble
