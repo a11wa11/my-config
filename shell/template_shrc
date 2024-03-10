@@ -48,4 +48,4 @@ $ '
 echo "**shrc loaded!  \nSHELL=$SHELL" 
 #########################
 export PATH="/opt/homebrew/opt/ansible@2.9/bin:$PATH"
-eval "$(nodenv init -)" # eval "$(nodenv init -)"
+eval "$(nodenv init -)"
