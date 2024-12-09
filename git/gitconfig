@@ -9,6 +9,7 @@
     cm = commit
     log1 = log --oneline
     dt = difftool
+    # sshCommand = ssh -i 適用したい鍵のパス
 [diff]
     tool = vimdiff
 [difftool]
